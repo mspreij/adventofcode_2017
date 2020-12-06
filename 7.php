@@ -1,21 +1,10 @@
 <pre>
 <?php
 
-$lines = explode("\n", trim(file_get_contents('7.txt')));
-
 // 7a
-foreach($lines as $line) {
-    preg_match_all('/([a-z]+)/', $line, $matches);
-    foreach ($matches[1] as $match) @$out[$match]++;
-}
-echo array_flip($out)[1]."\n"; // a terrible shortcut but it works!
-
-
-
-
-
-echo time_taken();
-
+preg_match_all('/([a-z]+)/', file_get_contents('7.txt'), $matches);
+foreach ($matches[1] as $match) @$out[$match]++;
+echo array_flip($out)[1];
 
 
 //_____________________________________
