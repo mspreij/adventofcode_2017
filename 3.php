@@ -19,8 +19,7 @@ Spoiler: it was 480.
 
 
 // [2020-12-05 23:53:38] so yeah.. it worked, but ehr. I'll try and do it properly now.
-// 3b
-
+// 3a take 2
 $x = $y = 0;
 $loc[$x][$y] = 1; // aka $loc = [[1]];
 $min = $max = [0,0]; // for drawing things, later
@@ -31,33 +30,72 @@ $dirs = [
     [0,1],
 ];
 $dir = 0;
-for ($i=1; $i < 200; $i++) {
-    // move, check surroundings, change direction if possible
+
+// $counter = 1;
+// for ($i=1; $i < $input; $i++) {
+//     $counter++;
+//     // move, check surroundings, change direction if possible
+//     $move = $dirs[$dir];
+//     $x += $move[0];
+//     $y += $move[1];
+//     $max = [max($x, $max[0]), max($y, $max[1])];
+//     $min = [min($x, $min[0]), min($y, $min[1])];
+//     $loc[$x][$y] = $counter;
+//     $next_dir = ($dir + 1)%4;
+//     $next_x = $x + $dirs[$next_dir][0];
+//     $next_y = $y + $dirs[$next_dir][1];
+//     if (! isset($loc[$next_x][$next_y])) {
+//         $dir = $next_dir;
+//     }
+// }
+// echo "$x, $y: ".(abs($x) + abs($y));
+
+// 3b
+$counter = 1;
+while ($loc[$x][$y] < $input) {
+    $counter++;
+    // move, check surroundings and add them up, change direction if possible
     $move = $dirs[$dir];
     $x += $move[0];
     $y += $move[1];
     $max = [max($x, $max[0]), max($y, $max[1])];
     $min = [min($x, $min[0]), min($y, $min[1])];
-    $loc[$x][$y] = $i+1;
+    $loc[$x][$y] = sum_surrounding($loc, $x, $y);
     $next_dir = ($dir + 1)%4;
     $next_x = $x + $dirs[$next_dir][0];
     $next_y = $y + $dirs[$next_dir][1];
-    if (! isset($loc[$next_x]) or ! isset($loc[$next_x][$next_y])) {
+    if (! isset($loc[$next_x][$next_y])) {
         $dir = $next_dir;
     }
 }
-// var_export($loc);
-echo '<table>';
-for ($y=$min[1]; $y < $max[1]; $y++) {
-    echo '<tr>';
-    for ($x=$min[0]; $x < $max[0]; $x++) {
-        if (! isset($loc[$x][$y])) $loc[$x][$y] = ' ';
-        echo "<td>{$loc[$x][$y]}</td>";
+echo "$x, $y: ". $loc[$x][$y];
+
+function sum_surrounding($loc, $x, $y)
+{
+    $out = 0;
+    for ($i=-1; $i <= 1; $i++) {
+        for ($j=-1; $j <= 1; $j++) {
+            if (!$i and !$j) continue;
+            $out += $loc[$x+$i][$y+$j] ?? 0;
+        }
     }
-    echo '</tr>';
-    # code...
+    return $out;
 }
-echo '</table>';
+
+// table? if it fits..
+if ($max[1] < 5) {
+    echo '<table>';
+    for ($y=$min[1]; $y <= $max[1]; $y++) {
+        echo '<tr>';
+        for ($x=$min[0]; $x <= $max[0]; $x++) {
+            if (! isset($loc[$x][$y])) $loc[$x][$y] = ' ';
+            echo "<td>{$loc[$x][$y]}</td>";
+        }
+        echo '</tr>';
+        # code...
+    }
+    echo '</table>';
+}
 
 ?>
 <style>
