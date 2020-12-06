@@ -1,6 +1,8 @@
-<?php
-/*
+<pre><?php
+$input = 347991;
 
+// 3a
+/*
 17  16  15  14  13
 18   5   4   3  12
 19   6   1   2  11
@@ -13,6 +15,53 @@ Input: 347991, sqrt 589.9 -> 590, squared again 348100, which is even so it's to
 348100 - 347991 = 109 so take that off the x coord, yielding [-186, 295]. Ish.
 Which would give a manhattan distance of 481. Which is wrong. But it's probably close!
 Spoiler: it was 480.
-
 */
+
+
+// [2020-12-05 23:53:38] so yeah.. it worked, but ehr. I'll try and do it properly now.
+// 3b
+
+$x = $y = 0;
+$loc[$x][$y] = 1; // aka $loc = [[1]];
+$min = $max = [0,0]; // for drawing things, later
+$dirs = [
+    [1,0],
+    [0,-1],
+    [-1,0],
+    [0,1],
+];
+$dir = 0;
+for ($i=1; $i < 200; $i++) {
+    // move, check surroundings, change direction if possible
+    $move = $dirs[$dir];
+    $x += $move[0];
+    $y += $move[1];
+    $max = [max($x, $max[0]), max($y, $max[1])];
+    $min = [min($x, $min[0]), min($y, $min[1])];
+    $loc[$x][$y] = $i+1;
+    $next_dir = ($dir + 1)%4;
+    $next_x = $x + $dirs[$next_dir][0];
+    $next_y = $y + $dirs[$next_dir][1];
+    if (! isset($loc[$next_x]) or ! isset($loc[$next_x][$next_y])) {
+        $dir = $next_dir;
+    }
+}
+// var_export($loc);
+echo '<table>';
+for ($y=$min[1]; $y < $max[1]; $y++) {
+    echo '<tr>';
+    for ($x=$min[0]; $x < $max[0]; $x++) {
+        if (! isset($loc[$x][$y])) $loc[$x][$y] = ' ';
+        echo "<td>{$loc[$x][$y]}</td>";
+    }
+    echo '</tr>';
+    # code...
+}
+echo '</table>';
+
 ?>
+<style>
+    td, table {
+        border: 1px solid black;
+    }
+</style>
